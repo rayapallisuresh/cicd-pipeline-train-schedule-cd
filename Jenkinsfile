@@ -21,6 +21,8 @@ pipeline{
             steps{
                 withCredentials([usernamePassword(credentialsId: 'webserver_login', passwordVariable: 'USERPASS', usernameVariable: 'USERNAME')]) {
                      sshPublisher(
+                         failOnError: true,
+                         continueOnError: false,
                          publishers: [
                              sshPublisherDesc(
                                               configName: 'Staging', 

@@ -16,6 +16,35 @@ pipeline{
                 }
             }
         }
+
+        stage("DeployToStaging"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'webserver_login', passwordVariable: 'USERPASS', usernameVariable: 'USERNAME')]) {
+                     sshPublisher(
+                         publishers: [
+                             sshPublisherDesc(
+                                              configName: 'Staging', 
+                                              sshCredentials: [
+                                                   encryptedPassphrase: "$USERPASS", 
+                                                   username: "$USERNAME"
+                                               ], 
+                                               transfers: [
+                                                   sshTransfer(
+                                                       execCommand: 'sudo /usr/bin/systemctl stop train-schedule && rm -rf /opt/train-schedule/* && unzip /tmp/trainSchedule.zip -d /opt/train-schedule && sudo /usr/bin/systemctl start train-schedule', 
+                                                       remoteDirectory: '/tmp', 
+                                                       removePrefix: 'dist/', 
+                                                       sourceFiles: 'dist/trainSchedule.zip'
+                                                       )
+                                                    ], 
+                                            )
+                                    ]
+                                )
+   
+                }
+            }
+            
+        }
+        
     }
     post{
         

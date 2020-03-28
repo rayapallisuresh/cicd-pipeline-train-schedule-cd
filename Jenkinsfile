@@ -54,9 +54,7 @@ pipeline{
                 branch 'master'
             }
             steps{
-                input {
-                  message 'Does the staging env look ok?'
-                }
+                input 'Does the staging env look ok?'
                 milestone(1)
 
                 withCredentials([usernamePassword(credentialsId: 'webserver_login', passwordVariable: 'USERPASS', usernameVariable: 'USERNAME')]) {
